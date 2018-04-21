@@ -22,4 +22,5 @@ simple MobileApplication extends IdealApplication
         @class(smile::algorithm::atdoa::MobileApplication);
         string mobilesLoggerModule = default("mobilesLog");
         string mobileFramesLoggerModule = default("mobileFramesLog");
+        int broadcastTxInterval @unit(ms) = default(100ms);    
 }

@@ -17,6 +17,7 @@
 
 #include <IdealApplication.h>
 #include <Logger.h>
+#include <utilities.h>
 
 namespace smile {
 namespace algorithm {
@@ -36,7 +37,16 @@ class MobileApplication : public smile::IdealApplication
  private:
   void initialize(int stage) override;
 
-  smile::Logger* framesLog;
+  void handleSelfMessage(cMessage* newMessage) override;
+
+  void handleTxCompletionSignal(const smile::IdealTxCompletion& completion) override;
+
+  void sendFrame();
+
+  smile::Logger* framesLog{nullptr};
+  SimTime broadcastTxInterval;
+  cMessage* broadcastTxTimerMessage{nullptr};
+  SequenceNumberGenerator<unsigned int> sequenceNumberGenerator;
 };
 
 }  // namespace atdoa

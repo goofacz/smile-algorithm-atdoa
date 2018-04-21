@@ -14,10 +14,10 @@
 //
 
 #include "MobileApplication.h"
-#include <CsvLogger.h>
 #include <inet/common/ModuleAccess.h>
 #include <utilities.h>
 #include "BeaconFrame_m.h"
+#include "CsvLoggerExtensions.h"
 
 namespace smile {
 namespace algorithm {
@@ -29,13 +29,43 @@ void MobileApplication::initialize(int stage)
 {
   IdealApplication::initialize(stage);
 
+  if (stage == inet::INITSTAGE_LOCAL) {
+    const auto& broadcastTxIntervalParameter = par("broadcastTxInterval");
+    broadcastTxInterval = SimTime(broadcastTxIntervalParameter.longValue(), SIMTIME_MS);
+  }
+
   if (stage == inet::INITSTAGE_APPLICATION_LAYER) {
     auto* mobilesLog = inet::getModuleFromPar<smile::Logger>(par("mobilesLoggerModule"), this, true);
-    const auto entry = csv_logger::compose(getMacAddress(), getCurrentTruePosition());
+    const auto entry = csv_logger::compose(getMacAddress(), getCurrentTruePosition(), broadcastTxInterval);
     mobilesLog->append(entry);
 
     framesLog = inet::getModuleFromPar<smile::Logger>(par("mobileFramesLoggerModule"), this, true);
+
+    broadcastTxTimerMessage = new cMessage{"broadcastTxTimerMessage"};
+    sendFrame();
+    scheduleAt(clockTime() + broadcastTxInterval, broadcastTxTimerMessage);
   }
+}
+
+void MobileApplication::handleSelfMessage(cMessage* newMessage)
+{
+  sendFrame();
+  scheduleAt(clockTime() + broadcastTxInterval, newMessage);
+}
+
+void MobileApplication::handleTxCompletionSignal(const smile::IdealTxCompletion& completion)
+{
+  const auto frame = omnetpp::check_and_cast<const BeaconFrame*>(completion.getFrame());
+  const auto entry = csv_logger::compose(getMacAddress(), completion, *frame);
+  framesLog->append(entry);
+}
+
+void MobileApplication::sendFrame()
+{
+  auto frame = createFrame<BeaconFrame>(inet::MACAddress::BROADCAST_ADDRESS);
+  frame->setSequenceNumber(sequenceNumberGenerator.generateNext());
+  frame->setBitLength(10);
+  sendDelayed(frame.release(), 0, "out");
 }
 
 }  // namespace atdoa
