@@ -15,8 +15,8 @@
 
 #pragma once
 
-#include "BeaconFrame_m.h"
 #include <CsvLogger.h>
+#include "BeaconFrame_m.h"
 
 namespace smile {
 namespace csv_logger {
