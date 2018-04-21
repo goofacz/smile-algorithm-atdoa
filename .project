@@ -3,6 +3,8 @@
 	<name>smile-algorithm-atdoa</name>
 	<comment></comment>
 	<projects>
+		<project>inet</project>
+		<project>smile</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
