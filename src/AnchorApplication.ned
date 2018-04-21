@@ -20,4 +20,6 @@ simple AnchorApplication extends IdealApplication
 {
     parameters:
         @class(smile::algorithm::atdoa::AnchorApplication);
+        string anchorsLoggerModule = default("anchorsLog");
+        string anchorFramesLoggerModule = default("anchorFramesLog");
 }

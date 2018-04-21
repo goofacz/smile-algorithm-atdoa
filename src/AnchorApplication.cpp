@@ -36,7 +36,7 @@ void AnchorApplication::initialize(int stage)
     const auto entry = csv_logger::compose(getMacAddress(), getCurrentTruePosition());
     anchorsLog->append(entry);
 
-    framesLog = inet::getModuleFromPar<smile::Logger>(par("mobileFramesLoggerModule"), this, true);
+    framesLog = inet::getModuleFromPar<smile::Logger>(par("anchorFramesLoggerModule"), this, true);
   }
 }
 
