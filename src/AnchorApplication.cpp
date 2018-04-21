@@ -19,6 +19,7 @@
 #include <inet/common/ModuleAccess.h>
 #include <utilities.h>
 #include "BeaconFrame_m.h"
+#include "CsvLoggerExtensions.h"
 
 namespace smile {
 namespace algorithm {
@@ -34,7 +35,21 @@ void AnchorApplication::initialize(int stage)
     auto* anchorsLog = inet::getModuleFromPar<smile::Logger>(par("anchorsLoggerModule"), this, true);
     const auto entry = csv_logger::compose(getMacAddress(), getCurrentTruePosition());
     anchorsLog->append(entry);
+
+    framesLog = inet::getModuleFromPar<smile::Logger>(par("mobileFramesLoggerModule"), this, true);
   }
+}
+
+void AnchorApplication::handleIncommingMessage(cMessage* newMessage)
+{
+ std::unique_ptr<cMessage>{newMessage};
+}
+
+void AnchorApplication::handleRxCompletionSignal(const IdealRxCompletion& completion)
+{
+  const auto frame = omnetpp::check_and_cast<const BeaconFrame*>(completion.getFrame());
+  const auto entry = csv_logger::compose(getMacAddress(), completion, *frame);
+  framesLog->append(entry);
 }
 
 }  // namespace atdoa

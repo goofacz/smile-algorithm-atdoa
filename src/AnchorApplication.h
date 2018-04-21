@@ -16,7 +16,7 @@
 #pragma once
 
 #include <IdealApplication.h>
-#include <inet/linklayer/ideal/IdealMacFrame_m.h>
+#include <Logger.h>
 
 namespace smile {
 namespace algorithm {
@@ -35,6 +35,12 @@ class AnchorApplication : public smile::IdealApplication
 
  private:
   void initialize(int stage) override;
+
+  void handleIncommingMessage(cMessage* newMessage) override;
+
+  void handleRxCompletionSignal(const IdealRxCompletion& completion) override;
+
+  smile::Logger* framesLog{nullptr};
 };
 
 }  // namespace atdoa
