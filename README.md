@@ -1,6 +1,6 @@
 # SMILe - Asynchronous TDoA
 
-[![Build Status](https://travis-ci.org/goofacz/smile-algorithm-whistle.svg?branch=master)](https://travis-ci.org/goofacz/smile-algorithm-whistle)
+[![Build Status](https://travis-ci.org/goofacz/smile-algorithm-atdoa.svg?branch=master)](https://travis-ci.org/goofacz/smile-algorithm-atdoa)
 
 This project implements localization algorithm presented in [Asynchronous time difference of arrival (ATDOA) method][1] paper.
 
