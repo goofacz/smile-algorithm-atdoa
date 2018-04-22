@@ -42,7 +42,7 @@ void AnchorApplication::initialize(int stage)
 
 void AnchorApplication::handleIncommingMessage(cMessage* newMessage)
 {
- std::unique_ptr<cMessage>{newMessage};
+  std::unique_ptr<cMessage>{newMessage};
 }
 
 void AnchorApplication::handleRxCompletionSignal(const IdealRxCompletion& completion)
