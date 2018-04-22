@@ -25,6 +25,12 @@ namespace atdoa {
 
 Define_Module(MobileApplication);
 
+MobileApplication::~MobileApplication()
+{
+  cancelAndDelete(localizationTxTimerMessage);
+  cancelAndDelete(broadcastTxTimerMessage);
+}
+
 void MobileApplication::initialize(int stage)
 {
   IdealApplication::initialize(stage);
@@ -36,21 +42,31 @@ void MobileApplication::initialize(int stage)
 
   if (stage == inet::INITSTAGE_APPLICATION_LAYER) {
     auto* mobilesLog = inet::getModuleFromPar<smile::Logger>(par("mobilesLoggerModule"), this, true);
-    const auto entry = csv_logger::compose(getMacAddress(), getCurrentTruePosition(), broadcastTxInterval);
+    const auto entry =
+        csv_logger::compose(getMacAddress(), getCurrentTruePosition(), localizationTxInterval, broadcastTxInterval);
     mobilesLog->append(entry);
 
     framesLog = inet::getModuleFromPar<smile::Logger>(par("mobileFramesLoggerModule"), this, true);
-
+    localizationTxTimerMessage = new cMessage{"localizationTxTimerMessage"};
     broadcastTxTimerMessage = new cMessage{"broadcastTxTimerMessage"};
-    sendFrame();
-    scheduleAt(clockTime() + broadcastTxInterval, broadcastTxTimerMessage);
+
+    scheduleAt(clockTime(), localizationTxTimerMessage);
   }
 }
 
 void MobileApplication::handleSelfMessage(cMessage* newMessage)
 {
-  sendFrame();
-  scheduleAt(clockTime() + broadcastTxInterval, newMessage);
+  if (newMessage == localizationTxTimerMessage) {
+    sendFrame();
+    scheduleAt(clockTime() + broadcastTxInterval, broadcastTxTimerMessage);
+  }
+  else if (newMessage == broadcastTxTimerMessage) {
+    sendFrame();
+    scheduleAt(clockTime() + localizationTxInterval, localizationTxTimerMessage);
+  }
+  else {
+    throw cRuntimeError{"MobileApplication received unknown message: \"%s\"", newMessage->getFullName()};
+  }
 }
 
 void MobileApplication::handleTxCompletionSignal(const smile::IdealTxCompletion& completion)

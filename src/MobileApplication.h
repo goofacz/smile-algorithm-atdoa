@@ -29,7 +29,7 @@ class MobileApplication : public smile::IdealApplication
   MobileApplication() = default;
   MobileApplication(const MobileApplication& source) = delete;
   MobileApplication(MobileApplication&& source) = delete;
-  ~MobileApplication() = default;
+  ~MobileApplication();
 
   MobileApplication& operator=(const MobileApplication& source) = delete;
   MobileApplication& operator=(MobileApplication&& source) = delete;
@@ -44,7 +44,9 @@ class MobileApplication : public smile::IdealApplication
   void sendFrame();
 
   smile::Logger* framesLog{nullptr};
+  SimTime localizationTxInterval;
   SimTime broadcastTxInterval;
+  cMessage* localizationTxTimerMessage{nullptr};
   cMessage* broadcastTxTimerMessage{nullptr};
   SequenceNumberGenerator<unsigned int> sequenceNumberGenerator;
 };
