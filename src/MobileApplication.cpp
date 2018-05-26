@@ -37,10 +37,10 @@ void MobileApplication::initialize(int stage)
 
   if (stage == inet::INITSTAGE_LOCAL) {
     const auto& broadcastTxIntervalParameter = par("broadcastTxInterval");
-    broadcastTxInterval = SimTime(broadcastTxIntervalParameter.longValue(), SIMTIME_MS);
+    broadcastTxInterval = SimTime(broadcastTxIntervalParameter.intValue(), SIMTIME_MS);
 
     const auto& localizationTxIntervalParameter = par("localizationTxInterval");
-    localizationTxInterval = SimTime(localizationTxIntervalParameter.longValue(), SIMTIME_MS);
+    localizationTxInterval = SimTime(localizationTxIntervalParameter.intValue(), SIMTIME_MS);
   }
 
   if (stage == inet::INITSTAGE_APPLICATION_LAYER) {

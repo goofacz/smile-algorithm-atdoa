@@ -1,0 +1,10 @@
+{
+  "import": [
+    "smile/jsons/simulations/basic_area/analyze_configuration.json",
+    "smile/jsons/algorithms/tdoa/chan_ho.json"
+  ],
+  "method_module": {
+    "path": "smile-algorithm-atdoa/python",
+    "name": "atdoa.simulation"
+  }
+}
